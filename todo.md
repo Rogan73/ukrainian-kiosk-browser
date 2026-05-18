@@ -17,3 +17,9 @@
 - [x] Generate and set app icon/logo
 - [x] Update app.config.ts with correct app name and branding
 - [x] Final polish: colors, spacing, press states
+
+## Bug Fixes
+
+- [x] Fix drawer list not updating after site save
+- [x] Fix left-swipe gesture detection blocked by WebView
+- [x] Implement immersive sticky mode to hide Android navigation bar

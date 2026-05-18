@@ -46,13 +46,13 @@ const config: ExpoConfig = {
     },
   },
   android: {
+    edgeToEdgeEnabled: true,
     adaptiveIcon: {
       backgroundColor: "#1565C0",
       foregroundImage: "./assets/images/android-icon-foreground.png",
       backgroundImage: "./assets/images/android-icon-background.png",
       monochromeImage: "./assets/images/android-icon-monochrome.png",
     },
-    edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
     package: env.androidPackage,
     permissions: [
@@ -94,6 +94,15 @@ const config: ExpoConfig = {
       "expo-screen-orientation",
       {
         initialOrientation: "PORTRAIT_UP",
+      },
+    ],
+    [
+      "expo-navigation-bar",
+      {
+        visibility: "hidden",
+        behavior: "overlay-swipe",
+        backgroundColor: "#000000",
+        barStyle: "light",
       },
     ],
     [

@@ -14,12 +14,13 @@ import { runOnJS } from "react-native-reanimated";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
+import * as NavigationBar from "expo-navigation-bar";
 import { useKiosk } from "@/lib/kiosk-context";
 import { KioskDrawer } from "@/components/kiosk-drawer";
 import { AboutDialog } from "@/components/about-dialog";
 
-const EDGE_SWIPE_WIDTH = 40;
-const MIN_SWIPE_DISTANCE = 60;
+const EDGE_SWIPE_WIDTH = 60;
+const MIN_SWIPE_DISTANCE = 40;
 
 export default function KioskScreen() {
   const router = useRouter();
@@ -28,6 +29,20 @@ export default function KioskScreen() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [webViewKey, setWebViewKey] = useState(0);
   const webViewRef = useRef<WebView>(null);
+
+  // Initialize immersive mode on Android
+  useEffect(() => {
+    if (Platform.OS !== "android") return;
+    const initImmersive = async () => {
+      try {
+        await NavigationBar.setVisibilityAsync("hidden");
+        await NavigationBar.setBehaviorAsync("overlay-swipe");
+      } catch (e) {
+        console.log("Navigation bar setup:", e);
+      }
+    };
+    initImmersive();
+  }, []);
 
   // Startup routing: if no sites, go to settings
   useEffect(() => {
@@ -63,11 +78,21 @@ export default function KioskScreen() {
   const openDrawer = useCallback(() => setDrawerOpen(true), []);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
-  // Edge swipe gesture to open drawer
+  // Edge swipe gesture to open drawer with higher priority
+  // This gesture detector wraps the WebView to intercept left-edge swipes
   const edgeSwipeGesture = Gesture.Pan()
     .minDistance(MIN_SWIPE_DISTANCE)
+    .activeOffsetX([-10, 10])
+    .failOffsetY([-5, 5])
     .onStart((e) => {
-      if (e.x <= EDGE_SWIPE_WIDTH && e.velocityX > 0) {
+      // Trigger if swipe starts from left edge and moves right
+      if (e.x <= EDGE_SWIPE_WIDTH && e.velocityX > 300) {
+        runOnJS(openDrawer)();
+      }
+    })
+    .onUpdate((e) => {
+      // Also trigger during the swipe if it's from the left edge
+      if (e.x <= EDGE_SWIPE_WIDTH && e.translationX > MIN_SWIPE_DISTANCE) {
         runOnJS(openDrawer)();
       }
     })
@@ -128,40 +153,37 @@ export default function KioskScreen() {
         backgroundColor="transparent"
       />
 
-      {/* Edge swipe detector layer */}
+      {/* Gesture detector wraps WebView to intercept left-edge swipes */}
       <GestureDetector gesture={edgeSwipeGesture}>
-        <View style={styles.gestureLayer} pointerEvents="box-none">
-          {/* Edge touch target */}
-          <View style={styles.edgeTouchTarget} />
+        <View style={styles.webViewContainer}>
+          {/* WebView */}
+          <WebView
+            key={webViewKey}
+            ref={webViewRef}
+            source={{ uri: activeSite.url }}
+            style={styles.webView}
+            javaScriptEnabled
+            domStorageEnabled
+            allowsInlineMediaPlayback
+            mediaPlaybackRequiresUserAction={!activeSite.isSoundEnabled}
+            scalesPageToFit={activeSite.isZoomEnabled}
+            setBuiltInZoomControls={activeSite.isZoomEnabled}
+            setDisplayZoomControls={false}
+            injectedJavaScript={getInjectedJS()}
+            onShouldStartLoadWithRequest={() => true}
+            mixedContentMode="always"
+            allowsFullscreenVideo
+            renderLoading={() => (
+              <View style={styles.webViewLoading}>
+                <ActivityIndicator size="large" color="#1565C0" />
+              </View>
+            )}
+            startInLoadingState
+          />
         </View>
       </GestureDetector>
 
-      {/* WebView */}
-      <WebView
-        key={webViewKey}
-        ref={webViewRef}
-        source={{ uri: activeSite.url }}
-        style={styles.webView}
-        javaScriptEnabled
-        domStorageEnabled
-        allowsInlineMediaPlayback
-        mediaPlaybackRequiresUserAction={!activeSite.isSoundEnabled}
-        scalesPageToFit={activeSite.isZoomEnabled}
-        setBuiltInZoomControls={activeSite.isZoomEnabled}
-        setDisplayZoomControls={false}
-        injectedJavaScript={getInjectedJS()}
-        onShouldStartLoadWithRequest={() => true}
-        mixedContentMode="always"
-        allowsFullscreenVideo
-        renderLoading={() => (
-          <View style={styles.webViewLoading}>
-            <ActivityIndicator size="large" color="#1565C0" />
-          </View>
-        )}
-        startInLoadingState
-      />
-
-      {/* Drawer */}
+      {/* Drawer - receives fresh sites from context */}
       <KioskDrawer
         visible={drawerOpen}
         sites={sites}
@@ -189,22 +211,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#000",
   },
-  gestureLayer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    zIndex: 10,
-    pointerEvents: "box-none",
-  },
-  edgeTouchTarget: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    bottom: 0,
-    width: EDGE_SWIPE_WIDTH,
-    backgroundColor: "transparent",
+  webViewContainer: {
+    flex: 1,
   },
   webView: {
     flex: 1,
@@ -248,20 +256,21 @@ const styles = StyleSheet.create({
     color: "#1A1A2E",
   },
   emptySubtitle: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#6B7280",
     textAlign: "center",
+    lineHeight: 24,
   },
   settingsButton: {
-    marginTop: 16,
     backgroundColor: "#1565C0",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    marginTop: 16,
   },
   settingsButtonText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
     color: "#fff",
   },
 });
