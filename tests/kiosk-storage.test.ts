@@ -32,6 +32,7 @@ const makeSite = (overrides: Partial<Omit<SiteConfig, "id">> = {}): Omit<SiteCon
   isFullscreen: true,
   isSoundEnabled: true,
   isZoomEnabled: false,
+  keepScreenAwake: true,
   ...overrides,
 });
 
@@ -95,6 +96,7 @@ describe("Kiosk Storage Service", () => {
         isFullscreen: false,
         isSoundEnabled: false,
         isZoomEnabled: true,
+        keepScreenAwake: false,
       })
     );
     const sites = await getSites();
@@ -103,5 +105,6 @@ describe("Kiosk Storage Service", () => {
     expect(found.isFullscreen).toBe(false);
     expect(found.isSoundEnabled).toBe(false);
     expect(found.isZoomEnabled).toBe(true);
+    expect(found.keepScreenAwake).toBe(false);
   });
 });
