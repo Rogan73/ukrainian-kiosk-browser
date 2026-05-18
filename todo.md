@@ -30,3 +30,5 @@
 
 - [x] Fix settings list not updating after adding a site
 - [x] Display app version dynamically in About dialog
+
+- [x] Fix WebView error on web platform (add Platform.OS check)
