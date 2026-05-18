@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   FlatList,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useRouter, useFocusEffect } from "expo-router";
+import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useKiosk } from "@/lib/kiosk-context";
@@ -16,14 +16,7 @@ import { SiteConfig } from "@/lib/storage";
 export default function SettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { sites, removeSite, activeSite, loadSites } = useKiosk();
-
-  // Reload sites whenever this screen comes into focus
-  useFocusEffect(
-    useCallback(() => {
-      loadSites();
-    }, [loadSites])
-  );
+  const { sites, removeSite, activeSite } = useKiosk();
 
   const handleDelete = (site: SiteConfig) => {
     Alert.alert(

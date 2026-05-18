@@ -162,11 +162,10 @@ export default function KioskScreen() {
       />
 
       {/* Gesture detector wraps WebView to intercept left-edge swipes */}
-      {Platform.OS !== "web" ? (
-        <GestureDetector gesture={edgeSwipeGesture}>
-          <View style={styles.webViewContainer}>
-            {/* WebView */}
-            <WebView
+      <GestureDetector gesture={edgeSwipeGesture}>
+        <View style={styles.webViewContainer}>
+          {/* WebView */}
+          <WebView
             key={webViewKey}
             ref={webViewRef}
             source={{ uri: activeSite.url }}
@@ -188,17 +187,9 @@ export default function KioskScreen() {
               </View>
             )}
             startInLoadingState
-            />
-          </View>
-        </GestureDetector>
-      ) : (
-        <View style={styles.webViewContainer}>
-          <View style={styles.webViewLoading}>
-            <Text style={styles.webFallbackText}>WebView не підтримується на веб-платформі</Text>
-            <Text style={styles.webFallbackSubtext}>Використовуйте Expo Go на Android для перегляду</Text>
-          </View>
+          />
         </View>
-      )}
+      </GestureDetector>
 
       {/* Drawer - receives fresh sites from context */}
       <KioskDrawer
@@ -243,18 +234,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    gap: 12,
-  },
-  webFallbackText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1A1A2E",
-    textAlign: "center",
-  },
-  webFallbackSubtext: {
-    fontSize: 14,
-    color: "#6B7280",
-    textAlign: "center",
   },
   loadingContainer: {
     flex: 1,

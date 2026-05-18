@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Constants from "expo-constants";
 import { useColors } from "@/hooks/use-colors";
 
 interface AboutDialogProps {
@@ -17,7 +16,6 @@ interface AboutDialogProps {
 
 export function AboutDialog({ visible, onClose }: AboutDialogProps) {
   const colors = useColors();
-  const appVersion = Constants.expoConfig?.version ?? "1.0.0";
 
   const styles = StyleSheet.create({
     overlay: {
@@ -99,7 +97,7 @@ export function AboutDialog({ visible, onClose }: AboutDialogProps) {
               <Text style={styles.iconText}>🌐</Text>
             </View>
             <Text style={styles.title}>Kiosk Browser</Text>
-            <Text style={styles.version}>Версія {appVersion}</Text>
+            <Text style={styles.version}>Версія 1.0.0</Text>
             <View style={styles.divider} />
             <Text style={styles.description}>
               Браузер-кіоск для Android. Дозволяє відображати попередньо
