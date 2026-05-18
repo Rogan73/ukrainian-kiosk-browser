@@ -23,7 +23,3 @@
 - [x] Fix drawer list not updating after site save
 - [x] Fix left-swipe gesture detection blocked by WebView
 - [x] Implement immersive sticky mode to hide Android navigation bar
-
-## New Features
-
-- [x] Add "keep screen awake" toggle to site settings

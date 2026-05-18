@@ -40,9 +40,6 @@ export default function EditSiteScreen() {
   const [isZoomEnabled, setIsZoomEnabled] = useState(
     existingSite?.isZoomEnabled ?? false
   );
-  const [keepScreenAwake, setKeepScreenAwake] = useState(
-    existingSite?.keepScreenAwake ?? true
-  );
   const [isSaving, setIsSaving] = useState(false);
 
   // Listen for QR scan result passed via params
@@ -81,7 +78,6 @@ export default function EditSiteScreen() {
         isFullscreen,
         isSoundEnabled,
         isZoomEnabled,
-        keepScreenAwake,
       };
 
       if (isEditing && existingSite) {
@@ -200,12 +196,6 @@ export default function EditSiteScreen() {
               label="Дозволити масштабування"
               value={isZoomEnabled}
               onValueChange={setIsZoomEnabled}
-            />
-            <View style={styles.toggleDivider} />
-            <ToggleRow
-              label="Не вимикати екран"
-              value={keepScreenAwake}
-              onValueChange={setKeepScreenAwake}
             />
           </View>
 

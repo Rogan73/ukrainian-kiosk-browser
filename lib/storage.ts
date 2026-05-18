@@ -8,7 +8,6 @@ export interface SiteConfig {
   isFullscreen: boolean;
   isSoundEnabled: boolean;
   isZoomEnabled: boolean;
-  keepScreenAwake: boolean;
 }
 
 const SITES_KEY = "kiosk_sites";
