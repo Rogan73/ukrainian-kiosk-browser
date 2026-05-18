@@ -116,6 +116,11 @@ export default function SettingsScreen() {
                       <Text style={styles.badgeText}>Масштаб</Text>
                     </View>
                   )}
+                  {item.keepScreenAwake && (
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>Екран вкл</Text>
+                    </View>
+                  )}
                 </View>
               </View>
               <View style={styles.actionButtons}>

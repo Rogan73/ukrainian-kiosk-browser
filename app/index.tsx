@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as ScreenOrientation from "expo-screen-orientation";
 import * as NavigationBar from "expo-navigation-bar";
+import { useKeepAwake } from "expo-keep-awake";
 import { useKiosk } from "@/lib/kiosk-context";
 import { KioskDrawer } from "@/components/kiosk-drawer";
 import { AboutDialog } from "@/components/about-dialog";
@@ -69,6 +70,13 @@ export default function KioskScreen() {
     };
     applyOrientation();
   }, [activeSite]);
+
+  // Keep screen awake if site config requires it
+  useEffect(() => {
+    if (activeSite?.keepScreenAwake && Platform.OS !== "web") {
+      useKeepAwake();
+    }
+  }, [activeSite?.keepScreenAwake]);
 
   // Reload WebView when active site changes
   useEffect(() => {
