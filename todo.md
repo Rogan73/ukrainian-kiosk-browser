@@ -27,3 +27,6 @@
 ## New Features
 
 - [x] Add "keep screen awake" toggle to site settings
+
+- [x] Fix settings list not updating after adding a site
+- [x] Display app version dynamically in About dialog
